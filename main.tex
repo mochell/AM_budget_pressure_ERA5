@@ -29,7 +29,7 @@
 %\usepackage{epstopdf}
 %\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
-\title{Derivation of the angular momentum budget in spherical pressure coordinates for Reanalysis datasets}
+\title{Zonal Mean Angular Momentum Budget in Spherical Pressure Coordinates from Reanalysis datasets}
 \author{Momme Hell, SIO}
 \date{March 14th, 2019}      % Activate to display a given date or no date
 
@@ -67,11 +67,11 @@
 \maketitle
 
 \section{Introduction}
-The atmospheric momentum budget is derived in spherical pressure coordinates and formalted  such that it can be calculated from reanalysis data.\par
+The atmospheric momentum budget is derived in spherical pressure coordinates and then written such that one can be calculated the instantenous budget from reanalysis data.\par
 
-The relation of the angular momentum (AM) budget, the zonal momentum equation and eddy-fluxes are in \citet[chapter 11,][]{Peixoto2008}. A shorter introduction in the governing equations is given \citet[chapter 4.12, and 13.10,][]{Gill1982} as well as \citet{Andrews1987} or even \citet{Holton1975}.\par
+The relation of the angular momentum (AM) budget, the zonal momentum equation and eddy-fluxes can be found for example in \citet[chapter 11,][]{Peixoto2008}. A shorter introduction of the governing equations is given \citet[chapter 4.12, and 13.10,][]{Gill1982} as well as \citet{Andrews1987} or even \citet{Holton1975}.\par
 
-Section 2 of this manual introduces the AM-equation, section 3 and 4 explain simplifications due to averaging and section 5 introduces the difficulties of the budget in pressure coordinates. Section 6 explains how to apply this algebraic exercise to ERA5 data. 
+Section 2 of this script introduces the AM-equation, section 3 and 4 introduce the vertical and zonal mean due, and section 5 explains how these are applied in pressure coordinates. Section 6 explains how to this calculation is apply to ERA5 data and section 7 outlines two limits that seam to be dominant in the data. 
 
 \section{The governing Angular Momentum equation}
 The Angular Momentum (AM) is defined as 
@@ -79,14 +79,14 @@ The Angular Momentum (AM) is defined as
 \beq
 M = M_\Omega + M_r ~=~ \Omega r^2 \cos^2 \phi + u r\cos \phi, 
 \eeq
-
-where $\Omega$ is the earth rotation rate, $u$ the zonal wind, and $r$ the mean earth radius. Errors due to the variation of $r$ is generally small, though largest in the stratosphere (about $1\%$ following \citet[][chapter 4.12, p.93]{Gill1982}. $M_\Omega$ is the Angular Momentum of the atmosphere as it would be in solid rotation with earth, while $M_r$ is the movement relative to the earth rotation.\par
+%
+where $\Omega$ is the earth rotation rate, $u$ the zonal wind, and $r$ the mean earth radius. Errors due to variations in $r$ are generally small, though largest in the stratosphere (about $1\%$ following \citet[][chapter 4.12, p.93]{Gill1982}. $M_\Omega$ is the Angular Momentum of the Atmosphere as it would be in solid rotation with Earth, and $M_r$ is the movement relative to the earth rotation.\par
 
 The balance equation for angular momentum per unit volume in the rotating frame with longitude $\lambda$, latitude $\phi$ and height $z$ is  
 \beq
 \rho \Dt M = - \frac{\partial~p}{\partial \lambda} + \rho~F_\lambda~ r \cphi, 
 \eeq
-where $p$ is the pressure, $\rho$ is the density, $F_\lambda$ the frictional torques \citep[eq. 11.4,][]{Peixoto2008}. The Total derivate is 
+where $p$ is the pressure, $\rho$ is the density, $F_\lambda$ the frictional torques \citep[eq. 11.4,][]{Peixoto2008}. The total derivative is 
 \beq
 \Dt~(\cdot) = \frac{\partial}{\partial t} (\cdot) + u~ \frac{\partial}{r \cphi ~\partial \lambda}  (\cdot) + v~ \frac{\partial}{r~ \partial \phi} (\cdot) + w ~ \frac{\partial}{\partial z}  (\cdot).
 \eeq
@@ -97,14 +97,14 @@ The divergence operator of a vector field $\vect a$ is
 \beq
 div(\vect a ) = \frac{\partial}{\partial z} a_z + \frac{2 a_z}{r} + \frac{1}{r \cos{\phi}}  \frac{\partial}{\partial \phi} ( a_{\phi} \cos{\phi}) + \frac{1}{r \cos{\phi}} \frac{\partial}{\partial \lambda} a_\lambda, 
 \eeq
-(or in pressure coordinates
+In pressure coordinates this becomes
 \beq
-div(\vect a ) = - g \frac{\partial}{\partial p } \rho a_z + \frac{2 a_z}{r} + \frac{1}{r \cos{\phi}}  \frac{\partial}{\partial \phi} ( a_{\phi} \cos{\phi}) + \frac{1}{r \cos{\phi}} \frac{\partial}{\partial \lambda} a_\lambda
+div(\vect a ) = - g \frac{\partial}{\partial p } \rho a_z + \frac{2 a_z}{r} + \frac{1}{r \cos{\phi}}  \frac{\partial}{\partial \phi} ( a_{\phi} \cos{\phi}) + \frac{1}{r \cos{\phi}} \frac{\partial}{\partial \lambda} a_\lambda.
 \eeq
-).
-
-
-Separating the total AM in its relative $M_r$ and absolute $M_\Omega$ components leads to a balance equation of the absolute AM changes due to advection of planetary vorticity
+%
+%
+%
+Separating the total AM into its relative $M_r$ and absolute $M_\Omega$ components leads to a balance equation of the absolute AM changes due to advection of planetary vorticity
 
 \beq \label{eq:abs_momentum_change}
 \rho \Dt {M_\Omega} = - \rho ~ v ~ f ~r \cphi + \rho f' ~ w~ r ~ \cphi, 
@@ -119,22 +119,22 @@ The terms on the right hand side of \eqref{eq:abs_momentum_change} are {\it sink
 \beq
 \frac{D ~M_r}{D t}  = -   \frac{1}{\rho} \frac{\partial~p}{\partial \lambda} + F_\lambda~ r \cphi +  v ~ f ~r \cphi - f' ~ w~ r ~ \cphi, 
 \eeq
-(eq. 11.5 in \citet{Peixoto2008}). We use the boussinesq approximation and rewrite this equation in spherical pressure-coordinates (similar to \citet{Peixoto2008} eq. 11.6) 
+(eq. 11.5 in \citet{Peixoto2008}). We use the Boussinesq approximation and rewrite this equation in spherical pressure-coordinates (similar to \citet{Peixoto2008} eq. 11.6) 
 
 \beq \label{eq:rel_momentum_conservation}
 \frac{\partial ~ M_r}{\partial t}  = -~\text{div}(M_r \vect u) - \frac{\partial~\phi(p)}{\partial \lambda} + ~F_\lambda~ r \cphi +  ~ v ~ f ~r \cphi - f' ~ w~ r ~ \cphi, 
 \eeq
 
-(or, in z-coordinates
+or, in z-coordinates
 \beqs
 \frac{\partial ~M_r}{\partial t}  = - ~\text{div}( M_r \vect u)-   \frac{1}{\rho_0} \frac{\partial~p(z)}{\partial \lambda} + F_\lambda~ r \cphi +  v ~ f ~r \cphi - f' ~ w~ r ~ \cphi,
 \eeqs
-).
-The last term of the RHS is small due to the aspect ratio of the atmosphere. This equation should be the same as the zonal momentum equation for compressible fluids (is it ?).\par
+\par
+The last term of the RHS is small due to the aspect ratio of the atmosphere. %This equation should be the same as the zonal momentum equation for compressible fluids (is it ?).\par
 
 
 \section{Vertical integral}
-The following simplifications are preformed in pressure coordinates, since most atmospheric models operate in this coordinate system. The vertical integral in pressure coordinates is defined as 
+The following simplifications are performed in pressure coordinates, since most atmospheric models operate in this coordinate system. The vertical integral in pressure coordinates is defined as 
 \beq
 \lara {~\cdot~} =  \int_0^{p_s} ~(~\cdot~)~ \frac{d p}{g},  ~~~\mathtt{kg /m^2},  
 \eeq
@@ -143,9 +143,9 @@ with $g $ as the acceleration due to gravity and $p_s$ as the surface pressure.\
  \item The vertical integral of the divergence term is then 
 
 \begin{align}
- \lara{div( M_r \vect u )} = - \underbrace{\int_0^{p_s}  \frac{\partial}{\partial p} ( M_r w)  dp}_\text{=0, no velocity at the wall} 
- 			+  \underbrace{\frac{2}{r}  \int_0^{p_s}   \frac{M_r w}{g}  d p }_\text{=0, if w is continuos in the vertical}
-			+ \frac{1}{r \cos{\phi}}  \frac{\partial}{\partial \phi}  ~\cos{\phi} \lara{M_r v } 
+ \lara{div( M_r \vect u )} = &- \underbrace{\int_0^{p_s}  \frac{\partial}{\partial p} ( M_r w)  dp}_\text{=0, no velocity at the wall} 
+ 			+  \underbrace{\frac{2}{r}  \int_0^{p_s}   \frac{M_r w}{g}  d p }_\text{=0, if w is continuos in the vertical}\\
+			&+ \frac{1}{r \cos{\phi}}  \frac{\partial}{\partial \phi}  ~\cos{\phi} \lara{M_r v } 
 			+ \frac{1}{r \cos{\phi}} \frac{\partial}{\partial \lambda} \lara{M_r u}
 \end{align}
 
@@ -155,10 +155,9 @@ with $g $ as the acceleration due to gravity and $p_s$ as the surface pressure.\
 \lara{F_\lambda}  = ~ \int_{0}^{p_s} F_\lambda \frac{d p}{g} = \underbrace{F_\lambda |_{p=p_s(
 \lambda, \phi)}}_{= \mathcal{F}_{sfc}(\phi,\lambda)} -  \underbrace{[F_\lambda] |_{p=0}}_{\text{=0, at the top of the atmosphere}}. 
 \eeq
-the remanning term $\mathcal{F}_{sfc}$ is the total stress at the surface. In pressure coordinates, that is where pressure level intersects the surface.\par
+the remaining term $\mathcal{F}_{sfc}$ is the total stress at the surface. In pressure coordinates, that is where pressure level intersects the surface.\par
 
-The atmosphere can loose AM by two boundary layer processes to the surface. Either by turbulent momentum fluxes $F_{tur}$ or by exiting internal gravity waves $F_{wave}$ that put westward momentum (that is negative AM) in the atmosphere. These waves are thought to propagate as linear waves in the atmosphere until they break and deposit there negative AM locally. This process is known to be important in the NH and likely explains the hemispheric differences of the mean state and seasonal cycle in the lower stratosphere.
-
+The atmosphere loses AM to the surface by two boundary layer processes: (a) by turbulent momentum fluxes $F_{tur}$ or (b) by exciting internal gravity waves $F_{wave}$ that add westward momentum (that is negative AM) to the atmosphere. These waves are thought to propagate as linear waves in the atmosphere until they break and deposit their negative AM locally. This term is larger over large mountain ranges. %is known to be important in the NH and likely explains the hemispheric differences of the mean state and seasonal cycle in the lower stratosphere.
 
 \item The vertical integral of the pressure term gives
 \beq
@@ -186,18 +185,17 @@ Eq. \eqref{eq:rel_momentum_conservation} is then
 
 \section{Zonal mean}
 The zonal mean is defined as 
-
 \beq
 [~\cdot~] =  \frac{1}{2 \pi} ~ \int_0^ {2 \pi} ~~~ d\lambda.
 \eeq
-
+%
 %First we rewrite the total derivative as 
 %\begin{align}
 %\Dt M_r &= \frac{\partial}{\partial t} M_r + u~ \frac{\partial}{r \cphi ~\partial \lambda}  ~M_r  + v~ \frac{\partial}{r~ \partial \phi} ~M_r + w ~ \frac{\partial}{\partial z}~M_r,\\
 %&= \frac{\partial}{\partial t} M_r +  \frac{\partial}{r \cphi ~\partial \lambda}  ~M_r u  - M ~ \frac{\partial}{r\cphi~\partial \lambda}  ~u   + \frac{\partial}{r~ \partial \phi} ~M_r v - M_r~ \frac{\partial}{r~\partial \phi} ~v +  ~ \frac{\partial}{\partial z}~M_r w - M_r ~ \frac{\partial}{\partial z}~w,\\
 %&= \frac{\partial}{\partial t} M_r +  \frac{\partial}{r \cphi ~\partial \lambda}  ~M_r u    + \frac{\partial}{r~ \partial \phi} ~M_r v +  ~ \frac{\partial}{\partial z}~M_r  w - \underbrace{M_r~ \nabla \cdot \vect u}_\text{=0, by continuity}.\\
 %\end{align}
-
+%
 The zonal mean of eq.\eqref{eq:vert_int} is then 
 \begin{align} \label{eq:vert_int_zm}
 \frac{\partial ~\lara{[M_r]}}{\partial t}  &+ \frac{1}{r \cos{\phi}}  \frac{\partial}{\partial \phi}  ~\cos{\phi} \lara{ [M_r v] } + \underbrace{\left[ \frac{1}{r \cos{\phi}} \frac{\partial}{\partial \lambda} \lara{M_r u} \right]}_\text{=0, comment 1} \nonumber \\
@@ -205,52 +203,52 @@ The zonal mean of eq.\eqref{eq:vert_int} is then
 \end{align}
 
 \paragraph{comment 1}
-The zonal mean of the zonal derivative is zero, because the domain is periodic and $\lara{ M_r u}$ is a continuously differentiable.
+The zonal mean of the zonal derivative is zero, because the domain is periodic and $\lara{ M_r u}$ is continuously differentiable.
 
 \paragraph{comment 2}
-This term is not zero, because surfaces of geo potential height can intersect the earth surface. Therefore, $\partial_\lambda z$ is not necessarily continuously  differentiable and its zonal mean is not always zero (fundamental theorem on calculus). Physically what happens is that pressure difference between sides of mountain ridges lead to a net pressure force acting on the mountain pushing to the direction of less pressure (chapter 11.1.4 in \citep{Peixoto2008}). 
+This term is not zero, because surfaces of geopotential height can intersect the Earth's surface. Therefore, $\partial_\lambda z$ is not necessarily continuously  differentiable, and its zonal mean is not always zero (fundamental theorem on calculus). Physically, the pressure difference between sides of mountain ridges leads to a net pressure force acting on the mountain pushing in the direction of less pressure \citep[][chapter11.1.14]{Peixoto2008}. 
 
 
 \paragraph{comment 3}
-The vertical integral of the zonal mean meridional winds $\lara{[v]}$ is zero on long time scale, because there should be no net mass flux across latitude in the atmosphere. However, since we didn't introduced time means jet, this term can still play a role.\par
-\par
+The vertical integral of the zonal mean meridional winds $\lara{[v]}$ is zero on ``long" time scales, because there should be no net mass flux across latitude in the atmosphere. However, since we have not yet introduced time means, this term can play a role. It can act as a storage term for momentum.\par
 
+\newpage
 The resulting equation is then 
 \begin{align*}
 \frac{\partial ~\lara{[M_r]}}{\partial t}  -~ f~  \lara{ [v]}  ~r \cphi = - \left[ \frac{\partial~\lara{\Phi}}{\partial \lambda}  \right] ~+ ~ [\mathcal{F}]_{sfc} ~ r \cphi  - \frac{1}{r \cos{\phi}}  \frac{\partial}{\partial \phi}  ~\cos{\phi} \lara{ [M_r v] }. 
 \end{align*}
 
-This can be rewritten in terms of the zonal wind momentum equation using $M_r = r \cphi ~u$
+Rewritten in terms of the zonal-wind momentum equation using $M_r = r \cphi ~u$ leads to
 \begin{align} \label{eq:balance}
 \frac{\partial ~\lara{[u]}}{\partial t}  - f \lara{ [v]}    = ~ - \left[\frac{1}{r \cphi} \frac{\partial~\lara{\Phi}}{\partial \lambda}  \right]    ~+~ [\mathcal{F}]_{sfc}  - \frac{1}{r^2 \cos^2{\phi}}  \frac{\partial}{\partial \phi}  ~ r \cos^2{\phi} \lara{ [u v] }.  ~~\mathtt{\frac{N}{m^2}=Pa}
 \end{align}
-This looks like a familiar equation, the vertical integral of the TEM momentum equation with additional mountain torque \citep{Andrews1976,Edmon1980}.
+This resembles the vertical integral of the TEM momentum equation, with the addition of mountain torque \citep{Andrews1976,Edmon1980}.
 
 
 
-\section{Vertical integrals, zonal means in pressure Coordinates and Boer Bata}
-Because pressure coordinates have a kinenamtic lower boundary condition, i.e the pressure levels intersect the surface, we need to keep track of the number of valid point when calculating budgets. Follow \citet{Boer1982,Wills2015} the vertical integral is defined as
+\section{Vertical integrals, zonal means in pressure coordinates, and Boer Bata}
+Because pressure coordinates have a kinematic lower boundary condition (i.e the pressure levels intersect the surface), we need to keep track of the number of valid point when calculating budgets. Following \citet{Boer1982} and \citet{Wills2015}, the vertical integral is defined as
 \beq \label{beta_int}
-\lara {~\cdot~}^\beta = \int_0^{p_0} ~H_\beta~(~\cdot~) ~ \frac{d p}{g} = \lara{H_\beta~\cdot~}, ~~\mathtt{kg /m^2},  
+\lara {~\cdot~}^\beta = \int_0^{p_0} ~H_\beta~(~\cdot~) ~ \frac{d p}{g} = \lara{H_\beta~\cdot~}, ~~\mathtt{kg /m^2}.  
 \eeq
-note that $p_0$ is the lowest pressure level that exist in the model, while $p_s$ is the surface pressure that can be above or below $p_0$ at each grid point. It is also noted that non of both are the same as the mean sea level pressure (MSLP), which is the equivalent pressure at the (Geopotential) surface and not the pressure at the interface between land/ocean and atmosphere. For the ocean-atmosphere interface -- where the ocean surface is the same as the geoid -- $p_s$ is similar to MSLP, while the former is an instantaneous model output and MSLP often a mean over the output time step.\par
+Note that $p_0$ is the lowest pressure level that exists in the model, while $p_s$ is the surface pressure that can be above or below $p_0$ at each grid point. Neither $p_0$ nor $p_s$ is the same as the mean sea level pressure (MSLP), which is the equivalent pressure at the (geopotential) surface and not the pressure at the interface between land/ocean and atmosphere. For the ocean-atmosphere interface -- where the ocean surface is approximately the same as the geoid -- $p_s$ is similar to MSLP, while $p_s$ and $p_0$ are an instantaneous model output and MSLP often a mean over the output time step.\par
 The zonal mean is
 
 \beq
 [~\cdot~]_R =  \frac{1}{2 \pi} \left. ~ \int_0^ {2 \pi} ~ \rb ~ (~\cdot~) ~ d\lambda \middle/ 
-\frac{1}{2 \pi}  \int_0^{2 \pi} \rb ~ d \lambda \right.  = [\rb~\cdot~]/  [\rb] ,~~ \mathtt{\text{no units}}
+\frac{1}{2 \pi}  \int_0^{2 \pi} \rb ~ d \lambda \right.  = [\rb~\cdot~]/  [\rb] ,~~ \mathtt{\text{the averaging operator has no units}}
 \eeq
 %and time time mean as 
 %\beq
 %\bar {(\cdot)}_R =\left. \frac{1}{T} ~\int_0^{T} ~\rb~(~\cdot~)~d t \middle / \frac{1}{T} ~\int_0^{T} ~\rb ~d t \right. = \overline {(\rb~\cdot~)}  /   \bar {\rb} , 
 %\eeq
-
-
-where the $R$ sub or super script denotes the "representative" average, i.e. an average per valid grid point and per unit mass.
+%
+%
+where the $R$ subscript or superscript denotes the ``representative" average, i.e. an average per valid grid point and per unit mass.
 The weighting density $\rb$ is defined as 
 
 $$\rb = p_s ~H_\beta,$$ 
-where $H_\beta$ it the Boer-beta function \citep{Boer1982}, a heavy side function of the form 
+where $H_\beta$ it the Boer-beta function \citep{Boer1982}, a Heaviside function of the form 
 
 \beq
 H_\beta(p -p_s, \lambda, \phi, t)= 
@@ -259,10 +257,10 @@ H_\beta(p -p_s, \lambda, \phi, t)=
       0, & p -p_s \leq 0.
     \end{cases}
 \eeq
-When the $p(\lambda, \phi, t)$ is below the surface, it returns zero, 1 otherwise.\par
+This function returns zero when the $p(\lambda, \phi, t)$ is below the surface, and 1 otherwise.\par
 
 
-The vertical-integrated, zonal and time-mean AM equation \eqref{eq:balance} is then 
+The vertically integrated, zonal and time-mean AM equation \eqref{eq:balance} is then 
 
 \begin{align} \label{eq:balance_rb}
 \frac{\partial}{\partial t}  ~ \lara{[\rb~u]}^\beta &- f \lara{ [\rb~v]}^\beta  \nonumber  \\
@@ -271,7 +269,7 @@ The vertical-integrated, zonal and time-mean AM equation \eqref{eq:balance} is t
 \end{align}
 
 \subsection{Instantaneous fields}
-From now on, we deal with two averages for each term in \eqref{eq:balance_rb}, one that is the representative average $[\cdot]_R$, which has the right physical units (Pascal). Its use is to display the data. However, for a variable $x$ with units of Pascal, the terms that are used in the budget equation have the form of $\lara{[rb ~x ]}^\beta$ and units of $Pa^2$. Informed by \citet[Table 1,][]{Boer1982} we get:
+From now on, we deal with two averages for each term in \eqref{eq:balance_rb}, one that is the representative average $[\cdot]_R$, which has the right physical units (Pascal). Its use is to display the data. However, for a variable $x$ with units of Pascal, the terms that are used in the budget equation have the form of $\lara{[rb ~x ]}^\beta$ and units of $Pa^2$. Informed by \citet[Table 1,][]{Boer1982} we obtain:
 
 \begin{itemize}
 
@@ -312,7 +310,7 @@ and then consequently
 \eeqs
 
 
-The representative means of the mean and eddy term are explicitly
+The representative averages of the mean- and eddy-terms are
 \begin{align}
 \lara{[u~ v]_R}^\beta &=\frac{ \lara{ [\rb]~[u]_R~[v]_R }^{[\beta]}  }{ \lara{[\rb]}^{[\beta]}  }  +~\frac{\lara{[\rb]~ [u^* v^*]_R}^{[\beta]}}{ \lara{[\rb]}^{[\beta]} } ,
 \end{align}
@@ -320,7 +318,7 @@ calculated as
 \begin{align}
 \lara{[u~ v]_R}^\beta &=\lara{ [u]_R~[v]_R  }^{[\beta]}  +~ \lara{  [u^* v^*]_R }^{[\beta]} ,
 \end{align}
-where $(~\cdot~)^{[\beta]}$ indicated that the zonal mean heavyside function $[H_\beta]$ is used in the integral of \eqref{beta_int} instead of $H_\beta$.
+where $(~\cdot~)^{[\beta]}$ indicates the use of the zonal mean Heaviside function $[H_\beta]$ instead of $H_\beta$ in the integral of \eqref{beta_int}.
 
 \item The surface term is simpler because at the surface $\partial_p \rb = p_s ~\delta(p- p_s) = p_s$, such that we just have to take into account the surface pressure weighting
 \begin{align*}
@@ -328,12 +326,12 @@ where $(~\cdot~)^{[\beta]}$ indicated that the zonal mean heavyside function $[H
 [\mathcal{F}_{sfc}]_R &= [p_s~  \mathcal{F}_{sfc}] / [p_s]   &\mathtt{Pa}.
 \end{align*}
 
-The surface drag is splited in two components,
+The surface drag is split in two components,
 \begin{align}
 \mathcal{F}_{sfc}&= \mathcal{F}_{tur} + \mathcal{F}_{wave},
 \end{align}
 
-where $\mathcal{F}_{tur}$ is the surface drag due to turbulent stress and $\mathcal{F}_{wave}$ the surface stress due to the generation of internal wave drag that is induced surface winds flowing over rough topography. The wave drag is rather small, such that, even though technically a source/sink term, it is treated as a correction term in the budget equation.
+where $\mathcal{F}_{tur}$ is the surface drag due to turbulent stress and $\mathcal{F}_{wave}$ the surface stress due to the generation of internal wave drag that is induced by surface winds flowing over rough topography. The wave drag is small, such that, even though technically a source/sink term, it is treated as a correction term in the budget equation.
 
 
 \item Following section 3 in \citet{Boer1982}, the mountain torque term can be rewritten as 
@@ -346,21 +344,21 @@ where $\mathcal{F}_{tur}$ is the surface drag due to turbulent stress and $\math
 &= [\rb]  \lara{ \left[ \frac{1}{r \cphi} ~ \frac{\partial}{\partial \lambda} \left( H_\beta  ~\Phi  \right)   \right]_R}^{[\beta]} - ...  \\
 &=\lara{  [\rb]   \left[ \frac{1}{r \cphi} ~ \frac{\partial}{\partial \lambda} \left( H_\beta  ~\Phi  \right)   \right]_R}^{[\beta]} - \left[~\frac{\Phi_s}{g}~ \frac{1}{r \cphi} ~\frac{\partial~p_s}{\partial \lambda}\right]  [p_s]~~\mathtt{Pa^2} 
 \end{align*}
-The first term in the right hand side might cancel, the second will not, since it is nonlinear. The representative means are derived by dividing by $[p_s]$ as seen above.
+The first term on the righthand side might cancel, but the second will not, since it is nonlinear. The representative means are derived by dividing by $[p_s]$ as seen above.
 \end{itemize}
 
 
-\subsection{time averages}
-To time average these instantaneous zonal mean vertical integrals, we define a surface pressure weighted time mean
+\subsection{Time averages}
+The time average of the instantaneous zonal-mean vertical integrals is defined as the surface pressure weighted time mean
 \beq
 \barsharp{(~\cdot~)}_R = \overline{(p_s ~ \cdot)} / \bar p_s, 
 \eeq
-
+%
 %\beq
 %\widetilde{(~\cdot~)}_R = \overline{(p_s ~ \cdot)} / \bar p_s, 
 %\eeq
-
-where the over bar is the conventional time mean. The time mean of the terms above are then 
+%
+where the overbar is the conventional time mean. The time mean of the above terms is then 
 \begin{align}
 \barsharp{[X]}_R(\phi, p) &=  \frac{ ~\overline{ [p_s]  ~ [X~ \rb ]/ [ \rb]}  ~ }{   [\bar p_s]  }, \nonumber  \\
 \barsharp{  \lara{[\rb ~X]}^\beta  } &= \barsharp{ \lara{[\rb] [X]_R}_0^{p_0} },  \nonumber \\
@@ -375,22 +373,27 @@ The budget equation is then
   &~~~~~~~~~~~~~- \frac{1}{r^2 \cos^2{\phi} ~ [\bar p_s] }  \frac{\partial}{\partial \phi}  ~[\bar p_s]  r \cos^2{\phi} ~ \barsharp{ \lara{[\rb~ u^* v^{*}]_R   }^{[\beta]}  }  \nonumber\\
   &~~~~~~~~~~~~~+ \mathcal{R},
 \end{align}
+%
+with $\phi_s$ being the surface geopotential height and $p_s$ being the surface pressure. Both torque terms are non-zero, either because they are discontinuous or non-linear. $\mathcal{R}$ is the residual of the equation.\par
+Notes:
 
-with $\phi_s$ being the surface geo-potential height and $p_s$ being the surface pressure. Both torque terms are not zero, either because they are discontinuous or non-linear. $\mathcal{R}$ is the residual of the equation.\par
+\begin{itemize}
+\item The zonal derivatives are not explicitly weighted by surface pressure, while the meridional derivatives are.
+When no pressure weighting is applied in the zonal derivatives of surface pressure and $\frac{\partial}{\partial \lambda} \left( H_\beta  ~\Phi\right)$ the budget closes better.
+\item The zonal means of surface variables do not carry $[\cdot]_R$ sub-scripts, because they are not really representative averages.
+\end{itemize}
 
-The zonal derivates are not explicitly weighted by surface pressure, while the meridional derivates are. The reason for that is not really obvious, but the budget closes better when no pressure weighting is applied in the zonal derivates.\par
-The zonal mean of surface variables do not carry a $[\cdot]_R$ sub-script, because they are not really representative averages.
 
 
 \section{Computation with ERA5}
-The terms of \eqref{eq:balance_rb_tm} are calculated from hourly ERA5 data \citep{EuropeanCentreForMedium-RangeWeatherForecasts2017}. general comments:
+The terms of \eqref{eq:balance_rb_tm} are calculated from hourly ERA5 data \citep{EuropeanCentreForMedium-RangeWeatherForecasts2017}. General comments:
 
 \begin{itemize}
 
-\item The daily files are processed with hourly fields. First we calculate the zonal mean and then the vertical integrals, and then time mean.
+\item The daily files are computed from hourly fields. First we calculate the zonal mean and then the vertical integrals, and then time mean.
 
-\item The tendency term on the left hand side is computed as the central difference between the hourly fields of the vertically integrated zonal-mean zonal wind. For the daily mean estimates, the tendency term is biases due to the missing time steps before and after the daily flies. This leads to small discontinuities in the longterm time tendency term. This can be corrected by recalculating the tendency when is a post processing step.
-\item The meridional gradients are calculated using the 2nd-order central difference.
+\item The tendency term on the left-hand side is computed as the central finite difference between the hourly fields of the vertically integrated zonal-mean zonal wind. For the daily mean estimates, the tendency term is biased due to the missing time steps before and after the daily files. This leads to small discontinuities in the long-term time tendency term because the analysis is performed on daily fields. This bias could be corrected by recalculating the tendency in a post processing step.
+\item The meridional gradients are calculated using 2nd-order central differencing.
 \end{itemize}
 
 
@@ -418,7 +421,7 @@ Surface variables:
     \begin{tabular}{ | l | l | l | l | l | l | l | l |}
     \hline
     Variable Name & Units & key & ERA5 id  \\ \hline
-    instantaneous Surface pressure & $Pa$   & sp    &  134 \\ \hline
+    instantaneous surface pressure & $Pa$   & sp    &  134 \\ \hline
     instantaneous geopotential & $m^2~s^{-2}$   & z    &  129 \\ \hline
     instantaneous eastward turbulent surface stress & $N~m^{-2}$   & iews  &  229 \\ \hline
     mean eastward gravity wave surface stress $^1$ & $N~m^{-2}$  & megwss  &  235045 \\ \hline
@@ -428,55 +431,51 @@ Surface variables:
 
 \begingroup
     \fontsize{9pt}{11pt}\selectfont
-$^1$ The gravity wave stress is a one-hour time mean variable. It represents the momentum that is lost by gravity wave drag over one how, rather then the momentum at the time step of that hour, as all other variables do. In addition, the gravity wave drag dissipation of the model is only saved for the sum of $x$-and $y$-direction. With the variables stored in the ERA5 data base one could write down a balance equation for the wave drag components as 
+$^1$ The gravity wave stress is a one-hour time mean variable. It represents the momentum that is lost by gravity wave drag over one hour, rather then the momentum at the time step of that hour, as all other variables do. In addition, the gravity wave drag dissipation of the model is only saved for the sum of $x$-and $y$-direction. With the variables stored in the ERA5 data base one could write down a balance equation for the wave drag components as 
 $$ \left(\partial_t u\right)_{wave} + \left(\partial_t u\right)_{wave} =  F^x_{wave} + F^y_{wave} - \mathcal{D}_{wave} $$
 
-However ERA5 only provide the total wind fields which are the result of all tendencies in the set of equations. To estimate $\left(\partial_t u\right)_{wave}$ for closing this equation one would have to solve the meridional momentum equation in a similar fashion as the zonal momentum equation. We simple assume that
-$$ \left(\partial_t u\right)_{wave}  \approx  F^x_{wave} $$.
-This assumption and the 1 hour time mean instead of the instantaneous tendency introduce the largest error in the calculation.
+However ERA5 only provides the total wind fields, which are the result of all tendencies in the equations. To estimate $\left(\partial_t u\right)_{wave}$ for closing this equation one would have to solve the meridional momentum equation in a similar fashion to the zonal momentum equation. We simply assume that
+$$ \left(\partial_t u\right)_{wave}  \approx  F^x_{wave}.$$
+This assumption and the use of 1-hour time means instead of the instantaneous tendency is likely the largest source of errors in this calculation.
 \endgroup
 
 \subsection{Topographic drag segments}
-The vertical integral of the terms that are induced by topography are separately saved by continental area. This can be used to infer how much momentum is lost over each continent.\par
-we separate in Europa/Africa ($x^\circ$ W to $x^\circ$ E), Americas ($x^\circ$ W to $x^\circ$ E) and Asia ($x^\circ$ W to $x^\circ$ E).\par
-
-The sum of the segments reproduces the zonal mean value stored in the vertical integrated budget.
+The vertical integral of the terms induced by topography are separately saved by continental area. This can be used to infer how much momentum is ``lost" over each continental mountain range. We separate the glob into three analysis domains:  Europe/Africa ($18^\circ$ E to $60^\circ$ E), and Asia ($60^\circ$ E to $180^\circ$ E), the Americas ($180^\circ$ W to $18^\circ$ E). The sum of the segments reproduces the zonal mean value stored in the vertically integrated budget.
 The representative means for each segment are calculated as 
 
 \begin{align}
 [x]_{rep,j} = \begin{cases}  
-       [ x ~\rho_{\beta,j} ] /  [  \rho_\beta ]  , &  [  \rho_\beta ]  ~ \ne 0  \\
-       [ x ] , & [  \rho_\beta ]  ~= 0.
+      [ x ~\rho_{\beta,j} ] /  [  \rho_\beta ]  , &  [  \rho_\beta ]  ~ \ne 0  \\
+      [ x ] , & [  \rho_\beta ]  ~= 0.
     \end{cases} 
 \end{align}
-for surface variables
+For surface variables
 
 \begin{align}
-[x]_{rep,j} = 
-       [ x ~p_{s,j} ] /  [  p_s ] 
+[x]_{rep}^j = 
+      [ x ~p_{s}^j ] /  [  p_s ] ,
 \end{align}
-
-and the budget mean follow then as
+%
+and the budget mean is then
 
 \begin{align}
-[x]_{j}  = [x]_{rep,j}~   [  \rho_\beta ]  \\
-[x]_{j}  = [x]_{rep,j}~   [  p_s ]  
+[x]^{j}  = [x]_{rep}^j~   [  \rho_\beta ]  \\
+[x]^{j}  = [x]_{rep}^j~   [  p_s ] , 
 \end{align}
 such that 
 \beq
-[x]_{rep} =\frac{N_j}{N} ~\sum_j ~[x]_{rep,j} 
+[x]_{rep} =\frac{N_j}{N} ~\sum_j ~[x]_{rep}^j .
 \eeq
-\comment{comment to myself: the $N_j /N$ weighting might be an artefact of how xarray calculated the zonal mean. Put $j$ as super script}
+(The $N_j/N$ weighting might be an artefact of how xarray calculates the zonal mean).
 
 
-\subsection{Saved fields}
-The Variables are save as instantaneous zonal mean fields \eqref{eq:balance} but with the proper weightings, without the tendency term. From that we calculate the instantentous (hourly) vertically integrated budget equation \eqref{eq:balance_rb_tm} with without the time average. A last step derives the daily time mean \eqref{eq:balance_rb_tm}.\\
-In addition, we save instantaneous fields of  $[u]_R, [v]_R,  [H_\beta]_R$ and $[p_s]$. This allows a) to convert between representative and budget mean and to correct for discontinuities in the tendency term in a post processing step. 
+\subsection{Saved fields and example results}
+The variables are save as instantaneous zonal mean fields with and without weighting \eqref{eq:balance}, excluding the tendency term. From these we calculate the instantaneous (hourly) vertically integrated budget equation \eqref{eq:balance_rb_tm} (Fig.~\ref{fig:AM_example1} and \ref{fig:AM_example2}) and finally a daily mean (Fig.~\ref{fig:AM_example3}).\par
 
+In addition, we save instantaneous fields of  $[u]_R, [v]_R,  [H_\beta]_R$ and $[p_s]$. This allows us to convert between representative and budget means and to correct for discontinuities in the tendency term in a post processing step. 
 
-
-\subsection{Example Result}
-An example of the 1-day AM-Budget is shown in figure \ref{fig:AM_example1}, \ref{fig:AM_example2}, \ref{fig:AM_example3}.
+% \subsection{Example Result}
+% An example of the 1-day AM-Budget is shown in Figures \ref{fig:AM_example1}, \ref{fig:AM_example2}, \ref{fig:AM_example3}.
 
 \begin{figure}[h!]
 \centerline{\includegraphics[scale=.7]{exmpl_repres_dmean_ps_iews_2000-01-18.pdf}}
@@ -493,12 +492,33 @@ An example of the 1-day AM-Budget is shown in figure \ref{fig:AM_example1}, \ref
 
 \begin{figure}[h!]
 \centerline{\includegraphics[scale=.8]{F_srf_zm.png}}
-\caption{Zonal mean surface stress over the Southern Hemisphere.}
+\centerline{\includegraphics[scale=.8]{residual.png}}
+\caption{Zonal mean surface stress over the Southern Hemisphere and the residual of the budget calculation over the course of 2 months..}
 \label{fig:AM_example3}
 \end{figure}
 
 
+\section{Simple limits}
+The vertical integrated momentum budget \eqref{eq:balance_rb_tm} is rewritten now now neglecting all complicated averaging and weightings as
 
+\begin{align}
+&\overline{  \frac{\partial} {\partial t} ~\lara{[u]}  }  - \overline{ f \lara{ [v]_R} }  \nonumber \\
+&+~\overline{ \lara{ \left[ \frac{1}{r \cphi} ~ \frac{\partial}{\partial \lambda} \left(  ~\Phi  \right)   \right]} } - \overline{  \left[~\frac{\Phi_s}{g}~ \frac{1}{r \cphi} ~\frac{\partial~p_s}{\partial \lambda}\right]}  \nonumber\\ 
+  &~+ \frac{1}{r^2 \cos^2{\phi} ~ }  \frac{\partial}{\partial \phi}  ~  r \cos^2{\phi} ~ \left( \overline{ \lara{ [u]~[v] } } + \overline{ \lara{[u^* v^{*}]   }  } \right) - \overline{ [ \mathcal{F}_{wave}] }   \nonumber \\
+  &~= ~+  ~ \overline{ [ \mathcal{F}_{tur}] }+  \mathcal{R},
+\end{align}
+Everything on the left hand side of this equation is called ``LHS" in the store files. Over the Southern Ocean and for a long time mean, one expect the tendency term, mountain torque and gravity wave to be small. The equation reduces to
+\begin{align}
+\overline{ f \lara{ [v]_R} } ~+ \frac{1}{r^2 \cos^2{\phi} ~ }  \frac{\partial}{\partial \phi}  ~  r \cos^2{\phi} ~ \left( \overline{ \lara{ [u]~[v] } } + \overline{ \lara{[u^* v^{*}]   }  } \right)  
+~\approx ~ \overline{ [ \mathcal{F}_{tur}] }.
+\end{align}
+%
+In the presents of topography the total mountain drag, or, better said, the drag that the atmosphere loses to the topography, has to be added in the lonhg-term mean
+
+\begin{align}
+&\frac{1}{r^2 \cos^2{\phi} ~ }  \frac{\partial}{\partial \phi}  ~  r \cos^2{\phi} ~ \left( \overline{ \lara{ [u]~[v] } } + \overline{ \lara{[u^* v^{*}]   }  } \right) -  ~ \overline{ [ \mathcal{F}_{tur}] }  \nonumber \\
+& = -~\overline{ \lara{ \left[ \frac{1}{r \cphi} ~ \frac{\partial}{\partial \lambda} \left( \Phi  \right)   \right]} } + \overline{  \left[~\frac{\Phi_s}{g}~ \frac{1}{r \cphi} ~\frac{\partial~p_s}{\partial \lambda}\right]}  + \overline{ [ \mathcal{F}_{wave}] } +\mathcal{R}.
+\end{align}
 
 
 %\subsection{Bibliography}
