@@ -1,0 +1,15 @@
+Start Processing bata
+20211228 bata time: 2.7222650051116943
+20211228 1. zonal mean terms
+20211228 defining mountain tourque part I: 283.230694770813
+20211228 continental sepeparatio time: 87.05616784095764
+20211228 store and compute global surface tourque part II : 9.37558627128601
+20211228 Surface stresses and representative means: 34.1501362323761
+20211228 eddy terms compute: 18.426668167114258
+20211228 phi gradients compute: 0.2737300395965576
+20211228 tendency term compute: 0.011436223983764648
+20211228 Phi single var compute time: 0.05089688301086426
+20211228 define and zm process time :13.870008707046509
+20211228 save time :0.0671851634979248
+20211228 plot time :1.237429141998291
+20211228 total time :450.7302119731903

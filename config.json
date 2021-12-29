@@ -1,0 +1,65 @@
+{
+    "drake_limits": {
+          "max": "-55.5",
+          "min": "-63.0"
+          },
+    "startdate": "2014-11-01T00:00:00",
+    "enddate": "2016-12-01T23:59:59",
+    "constants": {
+              "ocean":{
+                    "gas_constant": "gas constant dry air [J/kg/K]",
+                    "gas_constant": "287.04",
+                    "kappa": "2/7",
+
+                    "cp" : "specific heat at constant pressure",
+                    "cp" : "gas_constant/kappa",
+
+                    "cp_v": "specific heat water vapor [J/kg/K]",
+                    "cp_v": "1870.0",
+
+                    "cl": "heat capacity liquid water [J/kg/K]",
+                    "cl": "4190.0",
+
+                    "gas_constant_v": " gas constant water vapor [J/kg/K]",
+                    "gas_constant_v": "461.50",
+
+                    "latent_heat_v": "latent heat of evaporation [J/kg]",
+                    "latent_heat_v": "2.5E+6"
+                  },
+              "atmos":{
+                    "gas_constant": "gas constant of pure water [J/kg/K]",
+                    "gas_constant": "461.5",
+
+                    "cp_0": "specific heat at 0 deg C [J/kg/K]",
+                    "cp_0": "4217.0",
+
+                    "viscosity_0": "shear viscosity",
+                    "viscosity_0": "1.787E-6",
+
+                    "viscosity_20": "shear viscosity",
+                    "viscosity_20": "1.002E-3",
+
+                    "density": "at 0 deg C [kg /m^3]",
+                    "density": "1000.0"
+                  },
+
+              "radius": "in meters [for Earth]",
+              "radius": "6.3710E+6",
+
+              "gravity": "in m/s^2",
+              "gravity": "9.81",
+
+              "omega": "angular velocity earth [rad/s]",
+              "omega": "7.292E-5",
+
+              "mean_sfc_press": "mean surface pressure",
+              "mean_sfc_press": "1E+5",
+
+              "solar_constant": "1360",
+              "tau": "0.22",
+              "albedo": "0.38",
+              "del_sol": "1.2",
+              "p_ref": "1e5",
+              "secs_per_day": "86400"
+                }
+}

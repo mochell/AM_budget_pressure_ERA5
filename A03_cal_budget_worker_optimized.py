@@ -2,99 +2,68 @@
 
 This scripts loads ERA5 hourly atmospheric data and tries to close the AM budget.
 
-This is pyhton 3 !!, use cyc_ph3 environment or similar
-requires files to be in processed/active!
+This is pyhton 3
 
 """
 import os
-exec(open(os.environ['PYTHONSTARTUP']).read())
-exec(open(STARTUP_2019_surfacemom).read())
+import sys
 
-import m_general_ph3 as M
+root_path= '/Users/Shared/Projects/codes/AM_budget_ERA5'
+sys.path.append(root_path)
+
+import tools_AM_budget as M
+from tools_AM_budget import write_log as logger
+
+#
+
+import imp
 import glob
 import xarray as xr
 import time
 import shutil
 import datetime
-from m_tools import write_log as logger
-#import scipy.ndimage.filters as smoother
+import numpy as np
 
-#%matplotlib inline
 print('python version sys.version')
 print('xr modules loaded')
 print(xr.__version__)
 
 
-# import varibables
-def init_from_input(arguments):
-    if (len(arguments) <= 1) | ('-f' in set(arguments) ) :
+# set varibables
+date_str    = '1980-01-01'
+workernumber= 250
 
-        date_str='1980-01-01'
-        #date='2016-02'
-        slavenumber=250
-        config_file = 'processing_config'
 
-        print('use standard values')
-        print(date_str)
-        print(config_file)
-    else:
-        date_str    =  arguments[1]
-        slavenumber =  arguments[2]
-        config_file =  arguments[3]
-        print('read vars from file: ' +str(arguments[1]) )
+ttotstart   = time.time()
 
-    return date_str, slavenumber, config_file
-
-date_str, slavenumber, config_file = init_from_input(sys.argv)
-
-#mconfig['server']='casper' # for testing!!  mconfig['server']
-
-""" config_file is not used jet """
-# load config file
-processor_path=mconfig['paths']['analysis']+'AM_budget/automated_ch/'
-conf_path=processor_path+ '/budget_cal_configs/'+mconfig['server']+ '/'
-Pconf =MT.json_load( config_file, conf_path)
-
-# load date.json and move to active folder
-try:
-    data_conf =MT.json_load(date_str, conf_path+'../processed/active/')
-    #shutil.move(conf_path+'../downloaded/'+date_str+'.json', conf_path+'../active/'+date_str+'.json')
-except:
-    print("could not find file, break ")
-    raise ValueError('could not find file')
-
-ttotstart=time.time()
 # %%
-load_path_plev = Pconf['save_path_level'] #mconfig['paths']['downloads'] + 'ERA5/temp_data_AM_budget/plevels/' # replace
-load_path_srf  = Pconf['save_path_surface'] #mconfig['paths']['downloads']  + 'ERA5/temp_data_AM_budget/surface/' # replace
-#load_path_srf  = mconfig['paths']['downloads'] + 'ERA5/temp_data_AM_budget/surface/'
-plot_path = Pconf['plot_path'] #mconfig['paths']['plot']      + 'AM_budget/budget_control/'     # replace
-save_path = Pconf['processed_save_path_base'] #mconfig['paths']['processed'] + 'AM_budget/data/'               # replace
-log_path = Pconf['log_path'] +'/budget_workers/'#mconfig['paths']['plot']      + 'AM_budget/logs/budget_workers/' # replace
+load_path_plev = root_path+'/data/'
+save_path   = load_path_plev
+plot_path   = root_path
+conf_path   = root_path
+log_path    = root_path
 
-#MT.mkdirs_r(plot_path)
-#MT.mkdirs_r(log_path)
-#MT.mkdirs_r(save_path)
+log_name    = 'worker_log_num'+str(workernumber)+'_'+date_str
+key_name    = 'ERA5_AM_eq_'
+plot_cont   = False
+seg_dict    = { 'africa_europa':slice(-17.9, 60), 'asia':slice(60.1, 180), 'americas':slice(-180.1, -18)  }
 
-log_name='worker_log_num'+str(slavenumber)+'_'+date_str
-key_name=Pconf['key_name'] #'ERA5_AM_eq_'              # replace
-plot_cont= False
-seg_dict={ 'africa_europa':slice(-17.9, 60), 'asia':slice(60.1, 180), 'americas':slice(-180.1, -18)  }
+mconfig     =   M.json_load( 'config', root_path)
 
 # define chunk sizes:
-time_chunk_size=3
-lat_chunk_size=60
+time_chunk_size = 3
+lat_chunk_size  = 60
 
 #flist =os.listdir(load_path)
 date_str_short=date_str.replace('-', '')
 D= xr.open_dataset(load_path_plev+'ERA5_subdaily_plev_.25deg_'+date_str_short+'.nc', chunks={'time':time_chunk_size, 'latitude':lat_chunk_size})#.isel(level=range(-12, 0))
-print(D.chunks)
-len(D.chunks)
-# help(xr.open_dataset)
-# D= xr.open_dataset(load_path_plev+'ERA5_subdaily_plev_.25deg_'+date_str_short+'.nc', chunks=20)#.isel(level=range(-12, 0))
 D['level'] = D.level*100.0 # to get Pascal
 
-Dsurface= xr.open_dataset(load_path_srf+'ERA5_subdaily_plev_.25deg_gph_'+date_str_short+'.nc', chunks={'time':time_chunk_size, 'latitude':lat_chunk_size})#.sel(latitude=slice(0, -90))
+print(D.chunks)
+len(D.chunks)
+
+Dsurface    = xr.open_dataset(load_path_plev+'ERA5_subdaily_plev_.25deg_gph_'+date_str_short+'.nc',
+            chunks={'time':time_chunk_size, 'latitude':lat_chunk_size})#.sel(latitude=slice(0, -90))
 # define varibables
 Phi      = D.z
 data     = D.drop('z')
@@ -103,11 +72,6 @@ fluxes   = Dsurface['iews']
 gravity_drag = Dsurface['megwss'] # These are the mean eastward gravity wave stresses,
 #eventhough the ERA5 documentation claims that this should have units of Pa = N m**-2,
 # they likely miss a factor of
-
-# """ fluxes have units of N s / m^2 and are accumulations since the last time step. To get to N/m^2 devide by 60 sec """
-# fluxes = Dsurface['ewss']
-#fluxes.data = fluxes.data#/ 3600.0
-#fluxes.attrs['units'] ='N m**-2'
 
 # %%
 def rho_beta(levels , ps, check=False):
@@ -384,8 +348,6 @@ def plot_continent_seperation(all_dict, Gbudget):
     return F
 
 # %%
-
-# %%
 hist = 'Start Processing bata'
 
 tstart=tstart_start=time.time()
@@ -414,10 +376,6 @@ print('Start Processing')
 hist = logger(hist, '1. zonal mean terms', verbose = False)
 print('1. zonal mean terms')
 
-
-
-
-
 # %% 2. a) mountain torque
 ps_zm= ps.mean('longitude').compute()
 
@@ -439,9 +397,6 @@ gph_sp_dlambda_zm_rep.attrs['units']='N m**-2'
 gph_sp_dlambda_zm_budget = gph_sp_dlambda_zm_rep * ps_zm
 gph_sp_dlambda_zm_budget.attrs['units']='N**2 m**-4'
 
-#gph_sp_dlambda_zm_rep.plot()
-#(gph_sp_dlambda_zm_rep.mean('time')).plot()
-
 # %%  2. a) 2. gph level tourque
 gph_bata_div                    = ddlambda_spherical(BATA_01 * Phi , None, r_e, lon, lat ).compute().sel(variable='temp_name_ddy').drop('variable')
 gph_bata_div_zm_rep             = (gph_bata_div * BATA).mean('longitude') / BATA_zm
@@ -457,9 +412,7 @@ tstart=time.time()
 
 # %% 2. b) continenal excurse
 """ start of continental excurse """
-#D.longitude
 # %% split out tourque terms per continent seperatly and save them
-
 
 Nlon=dict()
 N_tot= Nlon['N_total'] =float(D.longitude.size)
@@ -532,10 +485,10 @@ for kk in seg_dict.keys():
 
 
     save_path_local = save_path + '/drag_on_continents_zm/repres/'
-    MT.mkdirs_r(save_path_local)
+    M.mkdirs_r(save_path_local)
     G_CD_int.to_netcdf(save_path_local + key_name + 'repres_'+ kk+ '_'+ date_str + '.nc')
     save_path_local = save_path + '/drag_on_continents_zm/budget/'
-    MT.mkdirs_r(save_path_local)
+    M.mkdirs_r(save_path_local)
     GB_CD_int.to_netcdf(save_path_local + key_name + 'budget_'+ kk+ '_'+ date_str + '.nc')
 
 
@@ -564,9 +517,7 @@ tstart=time.time()
 
 """ end of continental excurse """
 
-
 # %%  2. c) finish up global mean of surface vars. compute and store them
-
 # 2. c)  1 surface tourque
 
 repres['torque_srf_zm']= gph_sp_dlambda_zm_rep.compute()
@@ -629,7 +580,6 @@ data_zm_budget  = (data_zm_rep * BATA_zm).compute() #(data * BATA).mean('longitu
 # store in dict
 repres['data_zm'] = data_zm_rep
 budget['data_zm'] = data_zm_budget
-
 
 
 tend=time.time()
@@ -834,22 +784,6 @@ hist = logger(hist, 'define and zm process time :'+ str(tend- tstart))
 tstart=time.time()
 
 
-# %% test difference between Bdget and representative mean
-# for k in G.keys():
-#     try:
-#         M.figure_axis_xy()
-#         ilo=-1
-#         arep= G[k].isel(time=2, level=ilo)
-#         abud= GB[k].isel(time=2, level=ilo)
-#
-#         abata =BATA_zm.isel(time=2, level=ilo)
-#         plt.plot(arep.latitude, arep*abata, '-+b', label='rep')
-#         plt.plot(arep.latitude, abud, '-r', label='budget')
-#         plt.title(k)
-#         plt.legend()
-#     except:
-#         pass
-
 # %% 5. Vertical integrals
 print('5. Vertical integrals')
 
@@ -949,27 +883,6 @@ del G_others, G_bata
 del tempv
 del uzm_vzm_rep, upvp_zm_rep, uzm_vzm_budget , upvp_zm_budget
 
-
-# %%
-
-# plotting
-# G_int_nobeta= vertical_integal(G)
-#
-# for k in G.keys():
-#     M.figure_axis_xy(15, 3)
-#     plt.subplot(1,3, 1)
-#     G_int_nobeta[k].plot()
-#     plt.subplot(1,3, 2)
-#
-#     G_int[k].plot()
-#     plt.subplot(1,3, 3)
-#     (G_int_nobeta[k] - G_int[k]).plot()
-#
-# # plot all
-# for k in G_int.keys():
-#     M.figure_axis_xy()
-#     G_int[k].plot()
-
 # %% 6. time average
 print('6. time average')
 G_int_tmean =ps_weight_timemean(G_int, ps_zm )
@@ -1011,17 +924,13 @@ tend=time.time()
 print('save time :' + str(tend- tstart))
 hist = logger(hist, 'save time :'+ str(tend- tstart))
 tstart=time.time()
-# %%
-# M.figure_axis_xy()
-# for k in level_vars:
-#     GB_int_tmean[k].plot(label=k)
-#
-# plt.legend()
 
 # simple test
 # %%
 
-
+import matplotlib.pyplot as plt
+import os
+imp.reload(M)
 # %%  vertical integrals
 #LHS = G_int['dudt'] - G_int['v_f_zm'] + G_int['uprime_vprime_zm_div'] + G_int['uzm_vzm_div']
 F = M.figure_axis_xy()
@@ -1154,7 +1063,6 @@ plt.plot(lat, (pdata['LHS'] + pdata['F_tur_zm'] ).mean('time')* cos_phi,'r-', li
 
 # plt.plot(lat, + torge_zm* cos_phi,'g-', linewidth= 1,   label='M tourque')
 # plt.plot(lat, (pdata['LHS'].isel(time=tt) + pdata['F_tur_zm'].isel(time=tt) - torge_zm )* cos_phi,'g--', linewidth= 1.3,   label='residual of 1 timestep')
-#
 #plt.plot(lat, (pdata['LHS'].isel(time=tt) + pdata['F_tur_zm'].isel(time=tt) )* cos_phi,'r--', linewidth= 1.3,   label='residual of 1 timestep')
 
 plt.legend(loc='upper right', ncol=2)
@@ -1181,16 +1089,16 @@ plt.grid()
 #date_str =str(pdata.time[0].data.astype('M8[D]'))
 F.save(name='exmpl_repres_dmean_ps_iews_'+ date_str, path=plot_path)
 
-
 print(' all done and saved')
 tend=time.time()
 print('plot time :' + str(tend- tstart))
 hist = logger(hist, 'plot time :' + str(tend- tstart))
 hist = logger(hist, 'total time :' + str(tend-tstart_start) )
 
-MT.save_log_txt(log_name ,log_path, hist , verbose=True )
+M.save_log_txt(log_name ,log_path, hist , verbose=True )
 
 #shutil.move(conf_path+'../active/'+date_str+'.json' , conf_path+'../processed/'+date_str+'.json', )
+data_conf= dict()
 data_conf['processed_tstamp']= datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 data_conf['processed_time']= 'total time :' + str(tend-tstart_start)
 
@@ -1200,5 +1108,5 @@ try:
 except:
     pass
 
-MT.json_save(name= date_str, path=conf_path+'../processed/' , data=data_conf)
-exit()
+M.json_save(name= date_str, path=conf_path+'/data/' , data=data_conf)
+#exit()
