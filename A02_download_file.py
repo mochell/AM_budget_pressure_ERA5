@@ -13,7 +13,7 @@ import datetime as datetime
 import shutil
 import sys
 
-root_path= '/Users/Shared/Projects/codes/AM_budget_ERA5'
+root_path= 'path_to_project'
 sys.path.append(root_path)
 
 import tools_AM_budget as M

@@ -1,2 +1,20 @@
 # AM_budget_pressure_ERA5
 Example script and documentation for deriving hourly Angular Momentum Budgets from reanalysis data on pressure levels
+
+# File description
+## technical_notes.pdf
+Derivation of the budget in Pressure coordinates and description of the in and output files.
+
+## A02_download_file.py
+example file of how to download data from the ECMWF server
+
+## A03_cal_budget_worker_optimized.py
+calculated the budget as described in technical_notes.pdf
+needs:
+tools_AM_budget.py # contains modules
+config.json        # contains various constants
+
+## example output:
+exmpl_repres_dmean_ps_iews_1980-01-01.pdf
+exmpl_budget_dmean_1980-01-01.pdf
+worker_log_num250_1980-01-01.hist.txt
