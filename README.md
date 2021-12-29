@@ -1,5 +1,14 @@
 ## Angular Momentum Budget in Spherical Pressure Coordinates from Reanalysis datasets
-Example script and documentation for deriving hourly Angular Momentum Budgets from reanalysis data on pressure levels
+Script and documentation for deriving hourly Angular Momentum Budgets from reanalysis data on pressure levels.
+
+please cite as:
+
+creator: mhell@ucsd.edu
+
+needed python modules:
+glob, xarray, time, shutil, numpy, cdsapi 
+# configure cdsapi credentials to download ERA5 data:
+https://cds.climate.copernicus.eu/api-how-to 
 
 # File description
 ## technical_notes.pdf
