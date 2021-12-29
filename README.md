@@ -3,7 +3,7 @@ Script and documentation for deriving hourly Angular Momentum Budgets from reana
 
 please cite as:
 
-Momme C. Hell. Angular Momentum Budget in Spherical Pressure Coordinates from Reanalysis datasets., 2021, v1.0 DOI:https://doi.org/10.5281/zenodo.5808431
+Momme C. Hell. Angular Momentum Budget in Spherical Pressure Coordinates from Reanalysis datasets., 2021, v1.0 DOI:https://doi.org/10.5281/zenodo.5808433
 
 creator: mhell@ucsd.edu
 
