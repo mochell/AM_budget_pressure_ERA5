@@ -6,6 +6,7 @@ Example script and documentation for deriving hourly Angular Momentum Budgets fr
 Derivation of the budget in Pressure coordinates and description of the in and output files:
 [embed] https://github.com/mochell/AM_budget_pressure_ERA5/blob/main/technical_notes.pdf [/embed]
 
+xfun::embed_file("technical_notes.pdf")
 
 ## A02_download_file.py
 example file of how to download data from the ECMWF server
