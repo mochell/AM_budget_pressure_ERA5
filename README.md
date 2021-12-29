@@ -1,4 +1,4 @@
-# AM_budget_pressure_ERA5
+## Angular Momentum Budget in Spherical Pressure Coordinates from Reanalysis datasets
 Example script and documentation for deriving hourly Angular Momentum Budgets from reanalysis data on pressure levels
 
 # File description
