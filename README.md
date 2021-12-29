@@ -11,10 +11,14 @@ example file of how to download data from the ECMWF server
 ## A03_cal_budget_worker_optimized.py
 calculated the budget as described in technical_notes.pdf
 needs:
-tools_AM_budget.py # contains modules
-config.json        # contains various constants
+### module file
+tools_AM_budget.py
+### contains various constants
+config.json        
 
 ## example output:
 exmpl_repres_dmean_ps_iews_1980-01-01.pdf
+
 exmpl_budget_dmean_1980-01-01.pdf
+
 worker_log_num250_1980-01-01.hist.txt
