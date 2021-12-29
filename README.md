@@ -8,7 +8,7 @@ Derivation of the budget in Pressure coordinates and description of the in and o
 
 <object data="https://github.com/mochell/AM_budget_pressure_ERA5/blob/main/technical_notes.pdf" type="application/pdf" width="700px" height="700px">
     <embed src="https://github.com/mochell/AM_budget_pressure_ERA5/blob/main/technical_notes.pdf">
-        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="http://yoursite.com/the.pdf">Download PDF</a>.</p>
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="https://github.com/mochell/AM_budget_pressure_ERA5/blob/main/technical_notes.pdf">Download PDF</a>.</p>
     </embed>
 </object>
 
