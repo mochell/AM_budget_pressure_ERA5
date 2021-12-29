@@ -7,6 +7,7 @@ creator: mhell@ucsd.edu
 
 ### needed python modules:
 glob, xarray, time, shutil, numpy, cdsapi 
+
 configure cdsapi credentials to download ERA5 data:
 https://cds.climate.copernicus.eu/api-how-to 
 
